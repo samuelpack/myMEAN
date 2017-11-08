@@ -1,0 +1,10 @@
+DELETE http://localhost:3000/users/5a01e4fa8e4bfb082978f6e3 HTTP/1.1
+content-type: application/json
+
+{
+    "firstName" : "Peter",
+    "lastName" : "Pan",
+    "email" : "ppan@example.com",
+    "username" : "ppan",
+    "password" : "password"
+}

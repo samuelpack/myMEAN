@@ -1,0 +1,14 @@
+{
+    "name": "myMean",
+    "version": "0.0.1",
+    "dependencies": {
+        "body-parser": "1.18.2",
+        "compression": "1.6.0",
+        "ejs": "^2.5.7",
+        "express": "4.16.2",
+        "express-session": "^1.14.1",
+        "method-override": "2.3.10",
+        "mongoose": "4.13.0",
+        "morgan": "1.9.0"
+    }
+}
