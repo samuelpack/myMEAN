@@ -1,35 +1,41 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
     firstName: String,
     lastName: String,
-    email: String,
+    email: {
+        type: String,
+        index: true,
+        match: [/.+\@.+\..+/, "Please fill in a valid e-mail address"]
+    },
     username: {
         type: String,
+        unique: true,
+        required: 'Username is required',
         trim: true
     },
-    password: String,
-
+    password: {
+        type: String,
+        validate: [
+            (password) => { return password && password.length > 6;
+            },'Password should be longer'
+        ]
+    },
+    salt: {
+        type: String
+    },
+    provider: {
+        type: String,
+        required: 'Provider is required'
+    },
+    providerId: String,
+    providerData: {},
     created: {
         type: Date,
         default: Date.now
-    },
-    website: {
-        type: String,
-        get: function(url){
-            if(!url){
-                return url;
-            }else{
-                if(url.indexOf('http://') !== 0 && url.indexOf('https://') !== 0){
-                    url = 'http://' + url;
-                }
-
-                return url;
-            }
-        }
-    },
-
+    }
 });
 
 // Set the 'fullname' virtual property
@@ -39,7 +45,47 @@ UserSchema.virtual('fullName').get(function() {
     const splitName = fullName.split('');
     this.firstName = splitName[0] || '';
     this.lastName = splitName[1] || '';
-}); 
+});
+
+// Use a pre-save middleware to hash the password
+UserSchema.pre('save', function(next) {
+    if (this.password) {
+        this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+        this.password = this.hashPassword(this.password);
+    }
+
+    next();
+});
+
+// Create an instance method for hashing a password
+UserSchema.methods.hashPassword = function(password) {
+    return crypto.pbkdf25Sync(password, this.salt, 10000, 64).toString('base64');
+}
+
+// Create an instance method for authenticating user
+UserSchema.methods.authenticate = function(password) {
+    return this.password === this.hashPassword(password);
+};
+
+// Find possible not used username
+UserSchema.statics.findUniqueUsername = function(username, suffix, callback) {
+    const possibleUsername = username + (suffix || '');
+
+    //Use the 'User' model 'findOne' method to find an available unique username
+    this.findOne({
+        username: possibleUsername
+    }, (err, user) => {
+        if (!err) {
+            if (!user) {
+                callback(possibleUsername);
+            } else {
+                return this.findUniqueUsername(username, (suffix || 0) + 1, callback);
+            }
+            } else {
+                callback(null);
+            }
+        });
+    },
 
 // Configure the 'UserSchema' to use getters and virtuals when transforming to JSON
 UserSchema.set('toJSON', {
