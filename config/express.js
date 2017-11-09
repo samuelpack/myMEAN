@@ -8,11 +8,12 @@ const session = require ('express-session');
 const flash = require ('connect-flash');
 const passport = require ('passport');
 
-
-
+//Define the Express configuration method
 module.exports = function() {
-    const app = express();
 
+    //Create a new Express application instance
+    const app = express();
+    
     if(process.env.NODE_ENV === 'development') {
         app.use(morgan('dev'));
     } else if (process.env.NODE_ENV === 'production'); {
