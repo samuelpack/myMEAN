@@ -2,10 +2,10 @@ POST http://localhost:3000/users/ HTTP/1.1
 content-type: application/json
 
     {
-        "firstName" : "Buck",
-        "lastName" : "Nasty",
-        "email" : "bnasty@example.com",
-        "website" : "www.bucknasty.com",
-        "username" : "bnasty",
+        "firstName" : "Don",
+        "lastName" : "Henley",
+        "email" : "dhenley@example.com",
+        "website" : "www.dhenley.com",
+        "username" : "dhenley",
         "password" : "password"
     }

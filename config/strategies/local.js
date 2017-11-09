@@ -1,30 +1,39 @@
+//Load the module dependencies
 const passport  = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('mongoose').model('User');
 
+//Create the local strategy configuration method
 module.exports = function() {
-    passport.use(new LocalStrategy((username, password, done) => {
+    
+    //Use the Passports local strategy
+    passport.use(new LocalStrategy(function(username, password, done) {
+
+    //Use the 'User' model 'findOne' method to find a user with the current username    
         User.findOne({
             username: username
         }, (err, user) => {
+            //If an error occurs continue to the next middleware
             if (err) {
                 return done(err);
             }
-            
+
+            //If a user was not found, continue to the next middleware with an error message            
             if (!user)  {
                 return done(null, false, {
                     message: 'Unknown user'
                 });
             }
 
+            //If the passport is incorrect, continue to the next middleware with an error message
             if (!user.authenticate(password)) {
                 return done(null, false, {
                     message: 'Invalid password'
                 });
             }
 
-            return done(null, user);
-        
+            //Otherwise, continue to the next middleware with the user object
+            return done(null, user);        
         });
     }));
 };
