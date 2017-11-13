@@ -1,6 +1,9 @@
 {
     // http://eslint.org/docs/rules/
-  
+    "parserOptions": {
+        "ecmaVersion": 6
+    },
+
     "ecmaFeatures": {
       "binaryLiterals": false,                    // enable binary literals
       "blockBindings": false,                     // enable let and const (aka block bindings)
@@ -200,7 +203,8 @@
   
   
       ////////// ECMAScript 6 //////////
-  
+      
+     
       "no-var": 0,          // require let or const instead of var (off by default)
       "generator-star": 0,  // enforce the position of the * in generator functions (off by default)
   
@@ -214,4 +218,5 @@
       "no-bitwise": 0,      // disallow use of bitwise operators (off by default)
       "no-plusplus": 0      // disallow use of unary operators, ++ and -- (off by default)
     }
+    
   }
